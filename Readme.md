@@ -42,8 +42,8 @@ Returns the sum of digits of a given non-negative integer.
 }
 ```
 
-## Likewise , /problem2, /problem3 .../problemn is created,
-## each problem has a separate controller function 
+ Likewise , /problem2, /problem3 .../problemn is created,
+ each problem has a separate controller function 
 
 ------------------------------------------------------------------------
 
@@ -86,4 +86,4 @@ Performs DFS traversal starting from a given node.
 }
 ```
 
-## Same as math questions
+ Same as math questions

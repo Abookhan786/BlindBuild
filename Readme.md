@@ -69,11 +69,8 @@ Returns the shortest path length between start and target nodes.
 { "message": "Success", "output": 2 }
 ```
 
--   Path does not exist
-
-``` json
-{ "message": "Success", "output": -1 }
-```
+ Likewise , /problem2, /problem3 .../problemn is created,
+ each problem has a separate controller function 
 
 ------------------------------------------------------------------------
 
@@ -143,5 +140,4 @@ Computes the nth root of a given value.
 { "message": "Success", "output": 3 }
 ```
 
-Example:\
-When `value = 27` and `n = 3`.
+ Same as math questions

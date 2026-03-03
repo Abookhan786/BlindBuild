@@ -47,5 +47,28 @@ const nthR = (req, res) => {
 
   res.json({ message: "Success", output: result });
 };
+//perutation of the array
+const Perm =  (req, res) => {
+  const { arr } = req.body;
+  if (!Array.isArray(arr)) return res.status(400).json({ error: "invalid" });
+  const results = [];
+  const permute = (curr, rest) => {
+    if (!rest.length) { results.push(curr); return; }
+    for (let i = 0; i < rest.length; i++)
+      permute([...curr, rest[i]], [...rest.slice(0, i), ...rest.slice(i + 1)]);
+  };
+  permute([], arr);
+  res.json({ result: results });
+};
+const GCD = (req, res) => {
+  const { values } = req.body;
+  if (!Array.isArray(values) || values.length === 0)
+    return res.status(400).json({ error: "invalid" });
 
-module.exports = { MM, nthR };
+  const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+  const result = values.reduce((acc, n) => gcd(acc, n));
+
+  res.json({ result });
+};
+
+module.exports = { MM, nthR,Perm,GCD };

@@ -64,6 +64,47 @@ const dSPL = (req, res) => {
 
   res.json({ message: "Success", output: minLength === Infinity ? -1 : minLength });
 };
+
+const TopoSort = (req, res) => {
+  const { graph } = req.body;
+  if (!graph) return res.status(400).json({ error: "invalid" });
+
+  const visited = new Set();
+  const stack = [];
+
+  const dfs = (node) => {
+    visited.add(node);
+    for (const neighbor of (graph[node] || []))
+      if (!visited.has(neighbor)) dfs(neighbor);
+    stack.push(node);
+  };
+
+  for (const node of Object.keys(graph))
+    if (!visited.has(node)) dfs(node);
+
+  res.json({ result: stack.reverse() });
+};
+
+const Postfix= (req, res) => {
+  const { tokens } = req.body;
+  if (!Array.isArray(tokens)) return res.status(400).json({ error: "invalid" });
+  const stack = [];
+  const ops = {
+    "+": (a, b) => a + b,
+    "-": (a, b) => a - b,
+    "*": (a, b) => a * b,
+    "/": (a, b) => Math.trunc(a / b),
+  };
+  for (const t of tokens) {
+    if (ops[t]) {
+      const b = stack.pop(), a = stack.pop();
+      stack.push(ops[t](a, b));
+    } else {
+      stack.push(Number(t));
+    }
+  }
+  res.json({ result: stack[0] });
+};
 // 4. Count Islands
 const CIS = (req, res) => {
   const { input1 } = req.body;
@@ -102,6 +143,4 @@ const CIS = (req, res) => {
 
   res.json({ message: "Success", output: count });
 };
-
-// bottom of dfsController.js
-module.exports = { dCD, dSPL, CIS };
+module.exports = { dCD, dSPL ,TopoSort,Postfix,CIS};

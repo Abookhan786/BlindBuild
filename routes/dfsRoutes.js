@@ -1,9 +1,13 @@
 const express = require("express");
+const { dCD, dSPL,TopoSort ,Postfix} = require("../controllers/dfsController");
+
 const router = express.Router();
 const { dCD, dSPL, CIS } = require("../controllers/dfsController");
 
-router.post("/problem1", dCD);
-router.post("/problem2", dSPL);
-router.post("/problem3", CIS);
+router.post("/problem1", dCD);   
+router.post("/problem2", dSPL);  
+router.post("/problem3", TopoSort);  
+router.post("/problem4", Postfix);  
+router.post("/problem5",CIS)
 
 module.exports = router;

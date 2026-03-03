@@ -1,17 +1,15 @@
-import type { Request, Response } from "express";
-
-
-export const dCD = (req: Request, res: Response) => {
+// Detect Cycle in Directed Graph
+const dCD = (req, res) => {
   const { input1 } = req.body;
 
   if (!input1 || typeof input1 !== "object" || Array.isArray(input1)) {
     return res.status(400).json({ message: "Error" });
   }
 
-  const visited = new Set<string>();
-  const recStack = new Set<string>();
+  const visited = new Set();
+  const recStack = new Set();
 
-  const dfs = (node: string): boolean => {
+  const dfs = (node) => {
     if (!input1[node]) return false;
     if (recStack.has(node)) return true;
     if (visited.has(node)) return false;
@@ -36,8 +34,8 @@ export const dCD = (req: Request, res: Response) => {
   res.json({ message: "Success", output: false });
 };
 
-
-export const dSPL = (req: Request, res: Response) => {
+// Shortest Path Length
+const dSPL = (req, res) => {
   const { input1, input2, input3 } = req.body;
 
   if (!input1 || !input2 || !input3) {
@@ -48,9 +46,9 @@ export const dSPL = (req: Request, res: Response) => {
   const start = input2;
   const target = input3;
   let minLength = Infinity;
-  const visited = new Set<string>();
+  const visited = new Set();
 
-  const dfs = (node: string, length: number) => {
+  const dfs = (node, length) => {
     if (node === target) {
       minLength = Math.min(minLength, length);
       return;
@@ -66,3 +64,5 @@ export const dSPL = (req: Request, res: Response) => {
 
   res.json({ message: "Success", output: minLength === Infinity ? -1 : minLength });
 };
+
+module.exports = { dCD, dSPL };

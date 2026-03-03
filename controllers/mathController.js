@@ -1,6 +1,6 @@
-import type { Request, Response } from "express";
 
-export const MM = (req: Request, res: Response) => {
+// Matrix Multiplication
+const MM = (req, res) => {
   const { input1, input2 } = req.body;
 
   if (!Array.isArray(input1) || !Array.isArray(input2)) {
@@ -14,7 +14,7 @@ export const MM = (req: Request, res: Response) => {
     return res.status(400).json({ message: "Error" });
   }
 
-  const result: number[][] = Array.from({ length: rowsA }, () => Array(colsB).fill(0));
+  const result = Array.from({ length: rowsA }, () => Array(colsB).fill(0));
 
   for (let i = 0; i < rowsA; i++) {
     for (let j = 0; j < colsB; j++) {
@@ -27,7 +27,8 @@ export const MM = (req: Request, res: Response) => {
   res.json({ message: "Success", output: result });
 };
 
-export const nthR = (req: Request, res: Response) => {
+// Nth Root
+const nthR = (req, res) => {
   const { input1, input2 } = req.body;
 
   if (typeof input1 !== "number" || typeof input2 !== "number") {
@@ -44,5 +45,7 @@ export const nthR = (req: Request, res: Response) => {
 
   const result = Math.pow(input1, 1 / input2);
 
-  res.json({ message: "Success", output: result })
+  res.json({ message: "Success", output: result });
 };
+
+module.exports = { MM, nthR };

@@ -65,29 +65,32 @@ const dSPL = (req, res) => {
   res.json({ message: "Success", output: minLength === Infinity ? -1 : minLength });
 };
 
+// Topological Sort
 const TopoSort = (req, res) => {
-  const { graph } = req.body;
-  if (!graph) return res.status(400).json({ error: "invalid" });
+  const { input1 } = req.body;
+  if (!input1) return res.status(400).json({ message: "Error" });
 
   const visited = new Set();
   const stack = [];
 
   const dfs = (node) => {
     visited.add(node);
-    for (const neighbor of (graph[node] || []))
+    for (const neighbor of (input1[node] || []))
       if (!visited.has(neighbor)) dfs(neighbor);
     stack.push(node);
   };
 
-  for (const node of Object.keys(graph))
+  for (const node of Object.keys(input1))
     if (!visited.has(node)) dfs(node);
 
-  res.json({ result: stack.reverse() });
+  res.json({ message: "Success", output: stack.reverse() });
 };
 
-const Postfix= (req, res) => {
-  const { tokens } = req.body;
-  if (!Array.isArray(tokens)) return res.status(400).json({ error: "invalid" });
+// Postfix Evaluation
+const Postfix = (req, res) => {
+  const { input1 } = req.body;
+  if (!Array.isArray(input1)) return res.status(400).json({ message: "Error" });
+
   const stack = [];
   const ops = {
     "+": (a, b) => a + b,
@@ -95,7 +98,8 @@ const Postfix= (req, res) => {
     "*": (a, b) => a * b,
     "/": (a, b) => Math.trunc(a / b),
   };
-  for (const t of tokens) {
+
+  for (const t of input1) {
     if (ops[t]) {
       const b = stack.pop(), a = stack.pop();
       stack.push(ops[t](a, b));
@@ -103,17 +107,15 @@ const Postfix= (req, res) => {
       stack.push(Number(t));
     }
   }
-  res.json({ result: stack[0] });
+
+  res.json({ message: "Success", output: stack[0] });
 };
-// 4. Count Islands
+
+// Count Islands
 const CIS = (req, res) => {
   const { input1 } = req.body;
 
-  if (
-    !Array.isArray(input1) ||
-    input1.length === 0 ||
-    !Array.isArray(input1[0])
-  ) {
+  if (!Array.isArray(input1) || input1.length === 0 || !Array.isArray(input1[0])) {
     return res.status(400).json({ message: "Error" });
   }
 
@@ -123,8 +125,7 @@ const CIS = (req, res) => {
   let count = 0;
 
   const dfs = (r, c) => {
-    if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] !== 1)
-      return;
+    if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] !== 1) return;
     grid[r][c] = 0;
     dfs(r + 1, c);
     dfs(r - 1, c);
@@ -143,4 +144,5 @@ const CIS = (req, res) => {
 
   res.json({ message: "Success", output: count });
 };
-module.exports = { dCD, dSPL ,TopoSort,Postfix,CIS};
+
+module.exports = { dCD, dSPL, TopoSort, Postfix, CIS };

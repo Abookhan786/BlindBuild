@@ -47,30 +47,35 @@ const nthR = (req, res) => {
 
   res.json({ message: "Success", output: result });
 };
-//perutation of the array
-const Perm =  (req, res) => {
-  const { arr } = req.body;
-  if (!Array.isArray(arr)) return res.status(400).json({ error: "invalid" });
+
+// Permutation of the array
+const Perm = (req, res) => {
+  const { input1 } = req.body;
+  if (!Array.isArray(input1)) return res.status(400).json({ message: "Error" });
+
   const results = [];
   const permute = (curr, rest) => {
     if (!rest.length) { results.push(curr); return; }
     for (let i = 0; i < rest.length; i++)
       permute([...curr, rest[i]], [...rest.slice(0, i), ...rest.slice(i + 1)]);
   };
-  permute([], arr);
-  res.json({ result: results });
+  permute([], input1);
+
+  res.json({ message: "Success", output: results });
 };
+
 const GCD = (req, res) => {
-  const { values } = req.body;
-  if (!Array.isArray(values) || values.length === 0)
-    return res.status(400).json({ error: "invalid" });
+  const { input1 } = req.body;
+  if (!Array.isArray(input1) || input1.length === 0)
+    return res.status(400).json({ message: "Error" });
 
   const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
-  const result = values.reduce((acc, n) => gcd(acc, n));
+  const result = input1.reduce((acc, n) => gcd(acc, n));
 
-  res.json({ result });
+  res.json({ message: "Success", output: result });
 };
-// 1. Longest Increasing Subsequence Length
+
+// Longest Increasing Subsequence Length
 const LIS = (req, res) => {
   const { input1 } = req.body;
 
@@ -91,7 +96,7 @@ const LIS = (req, res) => {
   res.json({ message: "Success", output: Math.max(...dp) });
 };
 
-// 2. Josephus Problem
+// Josephus Problem
 const JSP = (req, res) => {
   const { input1, input2 } = req.body;
 
@@ -114,15 +119,11 @@ const JSP = (req, res) => {
   res.json({ message: "Success", output: pos + 1 });
 };
 
-// 3. Spiral Matrix Traversal
+// Spiral Matrix Traversal
 const SMT = (req, res) => {
   const { input1 } = req.body;
 
-  if (
-    !Array.isArray(input1) ||
-    input1.length === 0 ||
-    !Array.isArray(input1[0])
-  ) {
+  if (!Array.isArray(input1) || input1.length === 0 || !Array.isArray(input1[0])) {
     return res.status(400).json({ message: "Error" });
   }
 
@@ -148,9 +149,7 @@ const SMT = (req, res) => {
   res.json({ message: "Success", output });
 };
 
-
-
-// 5. Decode Ways Count
+// Decode Ways Count
 const DWC = (req, res) => {
   const { input1 } = req.body;
 
@@ -178,5 +177,4 @@ const DWC = (req, res) => {
   res.json({ message: "Success", output: dp[n] });
 };
 
-module.exports = { LIS, JSP, SMT, DWC, MM, nthR,Perm,GCD  };
-
+module.exports = { LIS, JSP, SMT, DWC, MM, nthR, Perm, GCD };

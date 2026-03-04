@@ -1,8 +1,7 @@
 const express = require("express");
-const { dCD, dSPL,TopoSort ,Postfix} = require("../controllers/dfsController");
+const { dCD, dSPL, TopoSort, Postfix, CIS} = require("../controllers/dfsController");
 
 const router = express.Router();
-const { dCD, dSPL, CIS } = require("../controllers/dfsController");
 
 router.post("/problem1", dCD);   
 router.post("/problem2", dSPL);  

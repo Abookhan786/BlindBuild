@@ -70,5 +70,15 @@ const GCD = (req, res) => {
 
   res.json({ result });
 };
+const perfect =  (req, res) => {
+  const { n } = req.body;
+  if (typeof n !== "number" || n < 1) return res.status(400).json({ error: "invalid" });
 
-module.exports = { MM, nthR,Perm,GCD };
+  const divisors = [];
+  for (let i = 1; i < n; i++) if (n % i === 0) divisors.push(i);
+  const sum = divisors.reduce((a, b) => a + b, 0);
+
+  res.json({ result: { divisors, sum, perfect: sum === n } });
+};
+
+module.exports = { MM, nthR,Perm,GCD,perfect };

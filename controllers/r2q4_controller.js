@@ -1,0 +1,121 @@
+const Participant = require("../models/r2q4_participant");
+const Ticket = require("../models/r2q4_ticket");
+const Attendance = require("../models/r2q4_attendance");
+const Badge = require("../models/r2q4_badge");
+
+// ---------------- TICKETS ----------------
+
+// Get Ticket Details
+exports.getTicketDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const ticket = await Ticket.findOne({ ticketId: id }).populate("participantId");
+
+        if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+        res.json(ticket);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Verify Ticket
+exports.verifyTicket = async (req, res) => {
+    try {
+        const { ticketId } = req.body;
+        const ticket = await Ticket.findOne({ ticketId });
+
+        if (!ticket) return res.status(404).json({ valid: false, message: "Ticket not found" });
+        if (!ticket.isValid) return res.status(400).json({ valid: false, message: "Ticket already used" });
+
+        res.json({ valid: true, ticket });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// ---------------- CHECK-IN & ATTENDANCE ----------------
+
+// Process Mark Attendance
+exports.markAttendance = async (req, res) => {
+    try {
+        const { ticketId } = req.body;
+        const ticket = await Ticket.findOne({ ticketId });
+
+        if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+
+        // Check if already in attendance
+        const alreadyCheckedIn = await Attendance.findOne({ ticketId });
+        if (alreadyCheckedIn) return res.status(400).json({ message: "Already checked in" });
+
+        const attendance = new Attendance({
+            ticketId: ticket.ticketId,
+            participantId: ticket.participantId
+        });
+        await attendance.save();
+
+        // Void ticket
+        ticket.isValid = false;
+        ticket.status = "Used";
+        await ticket.save();
+
+        const participant = await Participant.findById(ticket.participantId);
+        res.status(201).json({ message: "Attendance marked successfully", participant });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Get Attendance Status (List all)
+exports.getAttendanceStatus = async (req, res) => {
+    try {
+        const list = await Attendance.find().populate("participantId");
+        res.json({
+            total: list.length,
+            attendees: list
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// ---------------- PARTICIPANTS ----------------
+
+// Get Participant Details
+exports.getParticipant = async (req, res) => {
+    try {
+        const { id } = req.query;
+        const participant = await Participant.findById(id);
+
+        if (!participant) return res.status(404).json({ message: "Participant not found" });
+        res.json(participant);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// ---------------- BADGES ----------------
+
+// Generate Badge
+exports.generateBadge = async (req, res) => {
+    try {
+        const { ticketId } = req.query;
+        const attendance = await Attendance.findOne({ ticketId });
+
+        if (!attendance) return res.status(400).json({ message: "Participant must mark attendance first" });
+
+        let badge = await Badge.findOne({ ticketId });
+        if (!badge) {
+            badge = new Badge({
+                badgeId: `B-${Date.now()}-${ticketId}`,
+                ticketId,
+                participantId: attendance.participantId
+            });
+            await badge.save();
+        }
+
+        const participant = await Participant.findById(attendance.participantId);
+        res.status(201).json({ message: "Badge generated", badge, participant });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};

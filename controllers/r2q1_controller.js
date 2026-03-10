@@ -1,5 +1,5 @@
 const Participant = require("../models/r2q1_participant");
-const Event = require("../models/r2q1_event");
+const Event = require("../models/r2q1_events");
 const Registration = require("../models/r2q1_registration");
 const Ticket = require("../models/r2q1_ticket");
 const bcrypt = require("bcryptjs");

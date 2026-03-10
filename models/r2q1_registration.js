@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const RegistrationSchema = new mongoose.Schema({
 
   ParticipantId: {

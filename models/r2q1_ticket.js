@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const TicketSchema = new mongoose.Schema({
   registrationId: {
     type: String,
@@ -15,7 +17,7 @@ const TicketSchema = new mongoose.Schema({
     ref: "Event"
   },
   qrCode: {
-    type: String, 
+    type: String,
     required: true
   },
   issuedAt: {

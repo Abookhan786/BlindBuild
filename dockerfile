@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Default command (development mode with nodemon)
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]

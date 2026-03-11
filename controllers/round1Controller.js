@@ -91,3 +91,100 @@ exports.gravityProcess = (req, res) => {
   }
   res.json({ result: balance });
 };
+// 1. Hidden Network Problem (Fixed Graph - Shortest Path)
+// Hidden Network Graph
+const hiddenGraph = {
+  1: [2, 3],
+  2: [4, 5],
+  3: [5],
+  4: [6],
+  5: [6, 7],
+  6: [8],
+  7: [9],
+  8: [10],
+  9: [10],
+  10: [],
+  11: [3, 7],
+  12: [8]
+};
+exports.HNP = (req, res) => {
+  const { input1, input2 } = req.body || {};
+
+  const start = Number(input1);
+  const target = Number(input2);
+
+  if (!Number.isInteger(start) || !Number.isInteger(target)) {
+    return res.status(400).json({ message: "Error" });
+  }
+  if (!(start in hiddenGraph) || !(target in hiddenGraph)) {
+    return res.status(400).json({ message: "Error" });
+  }
+
+  const queue = [[start, 0]];
+  const visited = new Set([start]);
+
+  while (queue.length) {
+    const [node, dist] = queue.shift();
+    if (node === target) return res.json({ message: "Success", output: dist });
+    for (const neighbor of hiddenGraph[node] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push([neighbor, dist + 1]);
+      }
+    }
+  }
+
+  return res.status(404).json({ message: "Error" });
+};
+
+exports.RFC = (req, res) => {
+  const { input1 } = req.body;
+
+  if (typeof input1 !== "string" || input1.trim() === "") {
+    return res.status(400).json({ message: "Error" });
+  }
+  if (!/^[a-zA-Z]+$/.test(input1)) {
+    return res.status(400).json({ message: "Error" });
+  }
+
+  const rail0 = [];
+  const rail1 = [];
+
+  for (let i = 0; i < input1.length; i++) {
+    if (i % 2 === 0) rail0.push(input1[i]);
+    else rail1.push(input1[i]);
+  }
+
+  const output = [...rail0, ...rail1].join("");
+  res.json({ message: "Success", output });
+};
+
+exports.TDL = (req, res) => {
+  const { input1 } = req.body;
+
+  if (typeof input1 !== "number" || !Number.isInteger(input1)) {
+    return res.status(400).json({ message: "Error" });
+  }
+
+  const currentSecond = new Date().getSeconds();
+  const output = input1 + currentSecond;
+
+  res.json({ message: "Success", output });
+};
+const isPrime = (n) => {
+  if (n < 2) return false;
+  for (let i = 2; i <= Math.sqrt(n); i++) {
+    if (n % i === 0) return false;
+  }
+  return true;
+};
+exports.PMF = (req, res) => {
+  const { input1 } = req.body;
+
+  if (typeof input1 !== "string" || input1.trim() === "") {
+    return res.status(400).json({ message: "Error" });
+  }
+
+  const output = isPrime(input1.length);
+  res.json({ message: "Success", output });
+};

@@ -5,8 +5,12 @@ const {
   knightValidator,
   combineColors,
   vowelOrbit,
-  gravityProcess
+  gravityProcess,
+  HNP,RFC, TDL, PMF
+
+
 } = require("../controllers/round1Controller");
+console.log("✅ Round1 routes file loaded")
 
 const router = express.Router();
 
@@ -27,5 +31,11 @@ router.post("/problem5", vowelOrbit);
 
 //Gravity Well
 router.post("/problem6", gravityProcess);
+router.post("/problem7",HNP);
+router.post("/problem8",RFC);
+router.post("/problem9",TDL);
+router.post("/problem10",PMF);
+
+
 
 module.exports = router;

@@ -3,6 +3,7 @@ const Event = require("../models/r2q1_events");
 const Registration = require("../models/r2q1_registration");
 const Ticket = require("../models/r2q1_ticket");
 const bcrypt = require("bcryptjs");
+const QRCode = require("qrcode");
 
 // ---------------- PARTICIPANTS ----------------
 
@@ -103,18 +104,29 @@ exports.cancelRegistration = async (req, res) => {
 // Generate Ticket
 exports.generateTicket = async (req, res) => {
   try {
-    const { registrationId, userId, eventId, qrCode } = req.body;
+    const { registrationId, userId, eventId } = req.body;
 
+    // Use a unique string for QR data (ticket info + timestamp)
+    const qrData = `${registrationId}-${userId}-${eventId}-${Date.now()}`;
+
+    // Generate QR code as base64 image string
+    const qrCodeImage = await QRCode.toDataURL(qrData);
+
+    // Create ticket
     const ticket = new Ticket({
       registrationId,
       userId,
       eventId,
-      qrCode,
+      qrCode: qrCodeImage,
       status: "Valid"
     });
 
     await ticket.save();
-    res.status(201).json({ message: "Ticket generated successfully", ticket });
+
+    res.status(201).json({
+      message: "Ticket generated successfully",
+      ticket
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

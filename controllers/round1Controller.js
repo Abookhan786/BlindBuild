@@ -249,3 +249,87 @@ exports.middleChar = (req, res) => {
   const result = len % 2 === 0 ? text.slice(mid - 1, mid + 1) : text[mid];
   res.json({ status: "success", result });
 };
+
+
+
+
+exports.Mirror = (req, res) => {
+  const { text } = req.body;
+
+  if (!text || text.trim() === "") {
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      msg: "Empty input",
+    });
+  }
+
+  const result = text.split("").reverse().join("");
+
+  return res.status(200).json({
+    status: "success",
+    result,
+  });
+};
+// Controller 12: Even-Odd Gate
+ exports.evenOddGate = (req, res) => {
+  const { number } = req.body;
+
+  if (number === undefined || number === null || isNaN(Number(number)) || typeof number === "string" && number.trim() === "") {
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      msg: "Invalid number",
+    });
+  }
+
+  const num = Number(number);
+  const result = num % 2 === 0 ? "Even" : "Odd";
+
+  return res.status(200).json({
+    status: "success",
+    result,
+  });
+};
+
+// Controller 13: Alphabet Position
+exports.alphabetPosition = (req, res) => {
+  const { char } = req.body;
+
+  if (!char || char.length !== 1 || !/^[a-zA-Z]$/.test(char)) {
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      msg: "Invalid character",
+    });
+  }
+
+  const result = char.toUpperCase().charCodeAt(0) - 64; // 'A' = 65, so A→1, B→2, ..., Z→26
+
+  return res.status(200).json({
+    status: "success",
+    result,
+  });
+};
+
+// Controller 14: Word Length Counter
+exports.wordLengthCounter = (req, res) => {
+  const { word } = req.body;
+
+  if (!word || word.trim() === "" || /\s/.test(word)) {
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      msg: "Invalid input",
+    });
+  }
+
+  const result = word.length;
+
+  return res.status(200).json({
+    status: "success",
+    result,
+  });
+};
+
+
